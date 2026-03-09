@@ -1,50 +1,65 @@
-# Welcome to your Expo app 👋
+# Map Location App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Expo Router app with tab-based screens for:
+- viewing the current user location on a map,
+- searching addresses and reverse-geocoding map taps,
+- sending a local notification when entering the TD Arena geofence.
 
-## Get started
+## Install Dependencies
 
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Install everything from `package.json`:
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+If you are building this project manually from scratch, these are the required dependencies:
 
-## Learn more
+```bash
+npm install @expo/vector-icons @react-navigation/bottom-tabs @react-navigation/elements @react-navigation/native expo expo-constants expo-font expo-haptics expo-image expo-linking expo-location expo-notifications expo-router expo-splash-screen expo-status-bar expo-symbols expo-system-ui expo-task-manager expo-web-browser react react-dom react-native react-native-gesture-handler react-native-maps react-native-reanimated react-native-safe-area-context react-native-screens react-native-web react-native-worklets
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Required dev dependencies:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm install -D @types/react eslint eslint-config-expo typescript
+```
 
-## Join the community
+## Run the App
 
-Join our community of developers creating universal apps.
+```bash
+npx expo start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Optional platform shortcuts:
+
+```bash
+npm run ios
+npm run android
+npm run web
+```
+
+## High-Level File Overview
+
+### `app/(tabs)/index.tsx`
+- Requests foreground location permission when the screen mounts.
+- Shows an error + Settings prompt if permission is denied.
+- Shows a loading indicator while waiting for GPS coordinates.
+- Renders a `MapView` centered on the user’s current location with `showsUserLocation` enabled.
+
+### `app/(tabs)/mapSearch.tsx`
+- Starts with a default map region (Charleston, SC).
+- Implements forward geocoding (`Location.geocodeAsync`) to convert typed addresses into coordinates.
+- Animates the map camera and updates a marker to searched coordinates.
+- Implements reverse geocoding (`Location.reverseGeocodeAsync`) on map tap to display a human-readable address.
+- Displays selected place info in a bottom card.
+
+### `app/(tabs)/tdNotifications.tsx`
+- Defines TD Arena coordinates and a geofence radius (100m).
+- Requests location + notification permissions.
+- Watches live location updates (`Location.watchPositionAsync`) and computes distance using a Haversine helper.
+- Triggers an immediate local notification when entering the geofence.
+- Resets the “entered” flag after leaving the zone so notifications can trigger again on re-entry.
+- Renders a map with a TD Arena marker and geofence circle overlay.
+
+> Note: The file in this project is named `tdNotifications.tsx` (plural).

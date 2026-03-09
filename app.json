@@ -9,7 +9,14 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location",
+          "fetch",
+          "remote-notification"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,6 +44,14 @@
           "dark": {
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location in the background to send you a notification when you arrive at TD Arena.",
+          "locationAlwaysPermission": "Allow $(PRODUCT_NAME) to track your location in the background to trigger geofence alerts.",
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to show your current location on the map."
         }
       ]
     ],
