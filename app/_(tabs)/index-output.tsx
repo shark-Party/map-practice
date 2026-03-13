@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, Alert, Linking } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, Linking, StyleSheet, Text, View } from 'react-native';
+import MapView from 'react-native-maps';
 
 export default function Index() {
   // 1. Define strictly typed state variables

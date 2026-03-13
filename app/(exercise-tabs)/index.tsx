@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Alert, Linking } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { useEffect, useState } from 'react';
+import { Alert, Button, Linking, StyleSheet, Text, View } from 'react-native';
+import MapView from 'react-native-maps';
 
 // Type definition for our parking spot
 type Coordinate = {
@@ -19,6 +19,14 @@ export default function Parking() {
       // TODO 1: Request Foreground Location permissions here.
       // If granted, set `hasPermission` to true. If not, set it to false.
       // If not granted, allow user to go to setting to turn on tracking
+      let {status} = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted'){
+        setHasPermission(false)
+        Alert.alert("Permission denied"[
+          {text: 'Cancel', style: 'cancel'}, {text: 'Go to Settings', onPress: () => Linking.openSettings()}
+        ])
+      } else{ setHasPermission(true)}
       
     })();
   }, []);
@@ -27,8 +35,11 @@ export default function Parking() {
     try {
       // TODO 2: Use Location.getCurrentPositionAsync() to get a snapshot of the user's location.
       // Make sure to use the 'High' accuracy setting!
-
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High
+      });
       // TODO 3: Save the latitude and longitude from that snapshot into the `parkingSpot` state.
+      setParkingSpot(location.coords);
       
       Alert.alert("Success", "Parking spot saved!");
     } catch (error) {
@@ -57,10 +68,18 @@ export default function Parking() {
           latitudeDelta: 0.05,
           longitudeDelta: 0.05,
         }}
+        showsUserLocation={true}
       >
         {/* TODO 5: Write a conditional statement here. 
             If `parkingSpot` has data, render a <Marker> component at those coordinates. */}
-        
+            {parkingSpot && (
+          <Marker
+            coordinate={{
+              latitude: parkingSpot.latitude,
+              longitude: parkingSpot.longitude,
+            }}
+          />
+        )}
       </MapView>
 
       {/* Floating UI at the bottom */}
